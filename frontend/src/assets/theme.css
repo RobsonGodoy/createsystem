@@ -1,0 +1,163 @@
+:root {
+  --primary-color: #00a8ff;
+  --secondary-color: #192a56;
+  --accent-color: #e84118;
+  --background-dark: #1e272e;
+  --background-light: #2f3640;
+  --text-primary: #ffffff;
+  --text-secondary: #dcdde1;
+  --hologram-blue: rgba(0, 168, 255, 0.1);
+  --stark-gradient: linear-gradient(135deg, #00a8ff, #00a8ff20);
+  --tech-pattern: repeating-linear-gradient(
+    45deg,
+    var(--background-dark),
+    var(--background-dark) 10px,
+    var(--background-light) 10px,
+    var(--background-light) 20px
+  );
+}
+
+/* Animações Globais */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 168, 255, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 168, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 168, 255, 0); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+/* Classes Utilitárias */
+.tech-bg {
+  background: var(--background-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--stark-gradient);
+  animation: scanline 2s linear infinite;
+}
+
+.hologram {
+  background: var(--hologram-blue);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(0, 168, 255, 0.2);
+  box-shadow: 0 0 15px rgba(0, 168, 255, 0.3);
+}
+
+.tech-card {
+  background: var(--background-light);
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--tech-pattern);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.pulse-effect {
+  animation: pulse 2s infinite;
+}
+
+.glitch-effect {
+  animation: glitch 0.2s infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Estilização de Componentes Vuetify */
+.v-btn {
+  text-transform: none !important;
+  letter-spacing: 0.5px !important;
+}
+
+.v-btn.v-btn--elevated {
+  background: var(--stark-gradient) !important;
+  border: 1px solid rgba(0, 168, 255, 0.3) !important;
+}
+
+.v-text-field .v-field__outline {
+  border-color: var(--primary-color) !important;
+}
+
+.v-navigation-drawer {
+  background: var(--background-dark) !important;
+  border-right: 1px solid var(--primary-color) !important;
+}
+
+.v-toolbar {
+  background: var(--background-dark) !important;
+  border-bottom: 1px solid var(--primary-color) !important;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background-dark);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.loading-circle {
+  width: 100px;
+  height: 100px;
+  border: 3px solid var(--primary-color);
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin-top: 20px;
+  letter-spacing: 2px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+} 

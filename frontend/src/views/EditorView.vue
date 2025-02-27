@@ -116,7 +116,6 @@
 
           <draggable
             v-model="layout"
-            :list="layout"
             :group="{ name: 'components', pull: true, put: true }"
             item-key="id"
             class="layout-container"
@@ -268,24 +267,26 @@
 
     <!-- Diálogo de visualização -->
     <v-dialog v-model="showPreview" fullscreen>
-      <v-card>
-        <v-toolbar color="primary">
+      <v-card class="preview-dialog tech-bg">
+        <v-toolbar color="primary" class="preview-toolbar">
           <v-btn icon @click="showPreview = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Visualização</v-toolbar-title>
+          <v-toolbar-title class="tech-text">VISUALIZAÇÃO</v-toolbar-title>
           <v-spacer />
           <v-btn
             icon
             @click="togglePreviewDevice"
+            class="pulse-effect"
           >
             <v-icon>{{ previewDevice === 'mobile' ? 'mdi-monitor' : 'mdi-cellphone' }}</v-icon>
           </v-btn>
         </v-toolbar>
-        <v-card-text class="preview-container pa-0">
+
+        <div class="preview-container pa-0">
           <div
             class="preview-frame"
-            :class="previewDevice"
+            :class="[previewDevice, 'tech-card']"
           >
             <div class="preview-content">
               <template v-for="(element, index) in layout" :key="index">
@@ -298,7 +299,8 @@
                     padding: `${(element.layout || {}).padding || 16}px`,
                     marginBottom: (element.layout || {}).newRow ? '16px' : '0px',
                     float: 'left',
-                    boxSizing: 'border-box'
+                    boxSizing: 'border-box',
+                    position: 'relative'
                   }"
                 >
                   <component
@@ -309,7 +311,7 @@
               </template>
             </div>
           </div>
-        </v-card-text>
+        </div>
       </v-card>
     </v-dialog>
 
@@ -933,14 +935,27 @@ const handleDragEnd = (event: any) => {
   border: 2px dashed var(--v-theme-primary) !important;
 }
 
+.preview-dialog {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--background-dark);
+}
+
+.preview-toolbar {
+  position: relative;
+  z-index: 2;
+}
+
 .preview-container {
-  height: calc(100vh - 64px);
-  background-color: #f0f0f0;
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   overflow: auto;
   padding: 24px;
+  position: relative;
+  background-color: var(--background-dark);
 }
 
 .preview-frame {
@@ -948,10 +963,15 @@ const handleDragEnd = (event: any) => {
   transition: all 0.3s ease;
   height: 100%;
   overflow: auto;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
 .preview-frame.desktop {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 120px);
 }
 
 .preview-frame.mobile {
@@ -960,6 +980,7 @@ const handleDragEnd = (event: any) => {
   border-radius: 32px;
   border: 12px solid #333;
   margin: 24px auto;
+  background: white;
 }
 
 .preview-content {
@@ -969,6 +990,7 @@ const handleDragEnd = (event: any) => {
   align-items: flex-start;
   gap: 16px;
   padding: 16px;
+  background: white;
 }
 
 .preview-content .width-100 {

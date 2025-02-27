@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { sequelize } from './config/database';
 import authRoutes from './routes/auth.routes';
 import siteRoutes from './routes/site.routes';
+import path from 'path';
 
 dotenv.config();
 
@@ -12,6 +13,9 @@ const app = express();
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Servir arquivos estáticos da pasta builds
+app.use('/builds', express.static(path.join(__dirname, '../builds')));
 
 // Rotas
 app.use('/api/auth', authRoutes);

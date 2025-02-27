@@ -85,8 +85,7 @@
               v-if="site.isPublished"
               variant="text"
               color="success"
-              :href="site.buildPath"
-              target="_blank"
+              @click="handleViewSite(site.buildPath)"
             >
               Visualizar
             </v-btn>
@@ -138,7 +137,7 @@
           <v-spacer />
           <v-btn
             color="primary"
-            text
+            :text="true"
             @click="showNewSiteDialog = false"
           >
             Cancelar
@@ -167,7 +166,7 @@
           <v-spacer />
           <v-btn
             color="primary"
-            text
+            :text="true"
             @click="showDeleteDialog = false"
           >
             Cancelar
@@ -182,16 +181,37 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- Substituir o diálogo de loading pelo JarvisLoader -->
+    <JarvisLoader
+      :show="isLoading"
+      :message="loadingMessage"
+      sub-message="Carregando site..."
+    />
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSiteStore } from '@/stores/site';
+import JarvisLoader from '@/components/JarvisLoader.vue';
 
 const router = useRouter();
 const siteStore = useSiteStore();
+
+interface Site {
+  id: number;
+  name: string;
+  buildPath?: string;
+  isPublished: boolean;
+  updatedAt: string;
+  layout: Array<{
+    type: string;
+    props: Record<string, any>;
+    id: number;
+  }>;
+}
 
 const showNewSiteDialog = ref(false);
 const showDeleteDialog = ref(false);
@@ -199,7 +219,17 @@ const valid = ref(false);
 const creating = ref(false);
 const deleting = ref(false);
 const newSiteName = ref('');
-const siteToDelete = ref<any>(null);
+const siteToDelete = ref<Site | null>(null);
+const isLoading = ref(false);
+const loadingMessage = ref('');
+
+// Computed property para a URL da API
+const apiUrl = computed(() => import.meta.env.VITE_API_URL);
+
+// Adicionar nova função para gerar a URL completa do site
+const getSiteUrl = (buildPath: string) => {
+  return `${apiUrl.value}${buildPath}`;
+};
 
 const nameRules = [
   (v: string) => !!v || 'Nome é obrigatório',
@@ -240,7 +270,7 @@ const handleCreateSite = async () => {
   creating.value = false;
 };
 
-const handleDelete = (site: any) => {
+const handleDelete = (site: Site) => {
   siteToDelete.value = site;
   showDeleteDialog.value = true;
 };
@@ -262,4 +292,35 @@ const confirmDelete = async () => {
 const handlePublish = async (siteId: number) => {
   await siteStore.publishSite(siteId);
 };
-</script> 
+
+// Função para simular o carregamento com mensagens
+const simulateLoading = async () => {
+  const messages = [
+    'INICIANDO J.A.R.V.I.S',
+    'CARREGANDO INTERFACE',
+    'ESTABELECENDO CONEXÃO',
+    'PREPARANDO VISUALIZAÇÃO',
+    'INICIALIZANDO SISTEMA'
+  ];
+
+  for (const message of messages) {
+    loadingMessage.value = message;
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+};
+
+// Função para visualizar o site
+const handleViewSite = async (buildPath: string) => {
+  try {
+    isLoading.value = true;
+    await simulateLoading();
+  } finally {
+    isLoading.value = false;
+    window.location.href = getSiteUrl(buildPath);
+  }
+};
+</script>
+
+<style scoped>
+/* Remover todos os estilos antigos do loading */
+</style> 
