@@ -56,14 +56,13 @@
         permanent
         location="left"
         width="300"
-        class="components-drawer"
+        class="components-drawer tech-drawer"
         elevation="1"
       >
         <v-toolbar
-          color="primary"
-          class="px-4 py-1"
+          class="tech-toolbar px-4 py-1"
         >
-          <v-toolbar-title class="text-white">Componentes</v-toolbar-title>
+          <v-toolbar-title class="tech-text">COMPONENTES</v-toolbar-title>
         </v-toolbar>
 
         <v-container class="pa-4">
@@ -74,23 +73,23 @@
             density="compact"
             variant="outlined"
             hide-details
-            class="mb-4"
+            class="mb-4 tech-search"
           />
         </v-container>
 
-        <v-list>
-          <v-list-subheader>ELEMENTOS</v-list-subheader>
+        <v-list class="tech-list">
+          <v-list-subheader class="tech-subheader">ELEMENTOS</v-list-subheader>
           <v-list-item
             v-for="component in filteredComponents"
             :key="component.type"
             :title="component.name"
-            class="component-item mb-2 mx-2"
+            class="component-item mb-2 mx-2 tech-list-item"
             rounded="lg"
             draggable="true"
             @dragstart="handleDragStart($event, component)"
           >
             <template v-slot:prepend>
-              <v-icon :icon="component.icon" color="primary" />
+              <v-icon :icon="component.icon" class="tech-icon" />
             </template>
           </v-list-item>
         </v-list>
@@ -241,26 +240,47 @@
         location="right"
         width="360"
         temporary
-        class="properties-drawer"
+        class="properties-drawer tech-drawer"
       >
         <v-toolbar
-          color="grey-lighten-4"
-          class="px-4 py-1"
+          class="tech-toolbar px-4 py-1"
         >
-          <v-toolbar-title>Editar Componente</v-toolbar-title>
+          <v-toolbar-title class="tech-text">EDITAR COMPONENTE</v-toolbar-title>
           <v-spacer />
           <v-btn
             icon="mdi-close"
             variant="text"
+            class="tech-close-btn"
             @click="showPropertyPanel = false"
-          />
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </v-toolbar>
 
-        <v-container v-if="selectedComponent">
+        <v-container v-if="selectedComponent" class="pa-4">
+          <div class="tech-editor-header mb-4">
+            <v-icon :icon="getComponentIcon(selectedComponent.type)" class="tech-editor-icon mr-2" />
+            <span class="tech-editor-type">{{ getComponentName(selectedComponent.type) }}</span>
+          </div>
+
           <component-editor
             :component="selectedComponent"
             @update="updateComponent"
+            class="tech-component-editor"
           />
+
+          <v-divider class="tech-divider my-4" />
+          
+          <div class="d-flex justify-end">
+            <v-btn
+              prepend-icon="mdi-content-save"
+              color="primary"
+              class="tech-save-btn"
+              @click="handleSaveEdit"
+            >
+              Salvar Alterações
+            </v-btn>
+          </div>
         </v-container>
       </v-navigation-drawer>
     </div>
@@ -788,6 +808,26 @@ const updateComponentLayout = (index: number, property: string, value: any) => {
 const handleDragEnd = (event: any) => {
   console.log('Drag ended:', event);
 };
+
+// Função para obter o ícone do componente
+const getComponentIcon = (type: string) => {
+  const component = availableComponents.find(c => c.type === type);
+  return component?.icon || 'mdi-puzzle';
+};
+
+// Função para obter o nome do componente
+const getComponentName = (type: string) => {
+  const component = availableComponents.find(c => c.type === type);
+  return component?.name || 'Componente';
+};
+
+// Função para salvar as alterações do componente
+const handleSaveEdit = () => {
+  showPropertyPanel.value = false;
+  snackbarText.value = 'Alterações salvas com sucesso!';
+  snackbarColor.value = 'success';
+  snackbar.value = true;
+};
 </script>
 
 <style scoped>
@@ -805,24 +845,91 @@ const handleDragEnd = (event: any) => {
 }
 
 .components-drawer {
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: white;
+  background: var(--background-dark) !important;
+  border-right: 1px solid var(--primary-color) !important;
+  box-shadow: 2px 0 20px rgba(41, 182, 246, 0.1) !important;
 }
 
-.component-item {
-  cursor: grab;
-  transition: all 0.2s ease;
-  border: 2px solid transparent;
+.tech-toolbar {
+  background: linear-gradient(90deg, var(--background-dark) 0%, var(--primary-color-dark) 100%) !important;
+  border-bottom: 1px solid var(--primary-color);
 }
 
-.component-item:hover {
-  background-color: #f5f5f5;
-  transform: translateY(-1px);
-  border-color: var(--v-theme-primary);
+.tech-search {
+  background: rgba(41, 182, 246, 0.05);
+  border: 1px solid var(--primary-color);
+  border-radius: 8px;
 }
 
-.component-item:active {
+.tech-search :deep(.v-field__input) {
+  color: #E1F5FE !important;
+}
+
+.tech-search :deep(.v-field__outline) {
+  opacity: 0.3;
+}
+
+.tech-search :deep(.v-label) {
+  color: #B3E5FC !important;
+}
+
+.tech-search :deep(.v-icon) {
+  color: var(--primary-color) !important;
+}
+
+.tech-list {
+  background: transparent !important;
+  padding: 8px;
+}
+
+.tech-subheader {
+  color: var(--primary-color) !important;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.tech-list-item {
+  background: rgba(41, 182, 246, 0.05) !important;
+  border: 1px solid transparent;
+  transition: all 0.3s ease !important;
+  margin-bottom: 8px !important;
+}
+
+.tech-list-item:hover {
+  background: rgba(41, 182, 246, 0.1) !important;
+  border-color: var(--primary-color);
+  transform: translateX(4px);
+  box-shadow: 0 0 15px rgba(41, 182, 246, 0.2);
+}
+
+.tech-list-item .tech-icon {
+  color: var(--primary-color) !important;
+  transition: transform 0.3s ease;
+}
+
+.tech-list-item:hover .tech-icon {
+  transform: scale(1.1);
+}
+
+.tech-list-item :deep(.v-list-item-title) {
+  color: #E1F5FE !important;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.tech-list-item:active {
   cursor: grabbing;
+  transform: scale(0.98);
+  box-shadow: 0 0 20px rgba(41, 182, 246, 0.3);
+}
+
+.ghost {
+  opacity: 0.5;
+  background: rgba(41, 182, 246, 0.2) !important;
+  border: 1px dashed var(--primary-color) !important;
 }
 
 .editor-main {
@@ -929,12 +1036,6 @@ const handleDragEnd = (event: any) => {
   cursor: move;
 }
 
-.ghost {
-  opacity: 0.5;
-  background: #e3f2fd !important;
-  border: 2px dashed var(--v-theme-primary) !important;
-}
-
 .preview-dialog {
   display: flex;
   flex-direction: column;
@@ -1033,5 +1134,124 @@ const handleDragEnd = (event: any) => {
   .preview-content .width-25 {
     flex-basis: calc(100% - 16px);
   }
+}
+
+/* Estilos para o painel de edição */
+.tech-editor-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(41, 182, 246, 0.05);
+  border-radius: 8px;
+  border: 1px solid var(--primary-color);
+}
+
+.tech-editor-icon {
+  color: var(--primary-color) !important;
+  font-size: 24px;
+}
+
+.tech-editor-type {
+  color: #E1F5FE;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.tech-component-editor {
+  padding: 16px;
+  background: rgba(41, 182, 246, 0.02);
+  border-radius: 8px;
+}
+
+.tech-component-editor :deep(.v-text-field),
+.tech-component-editor :deep(.v-select),
+.tech-component-editor :deep(.v-textarea) {
+  margin-bottom: 16px;
+  background: rgba(41, 182, 246, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.tech-component-editor :deep(.v-field) {
+  border: 1px solid rgba(41, 182, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.tech-component-editor :deep(.v-field:hover),
+.tech-component-editor :deep(.v-field--focused) {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(41, 182, 246, 0.2);
+}
+
+.tech-component-editor :deep(.v-label) {
+  color: #B3E5FC !important;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.tech-component-editor :deep(.v-field__input) {
+  color: #E1F5FE !important;
+}
+
+.tech-component-editor :deep(.v-select__selection),
+.tech-component-editor :deep(.v-select__selection-text) {
+  color: #E1F5FE !important;
+}
+
+.tech-divider {
+  border-color: var(--primary-color);
+  opacity: 0.2;
+}
+
+.tech-save-btn {
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark)) !important;
+  color: #E1F5FE !important;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-save-btn::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: buttonGlow 2s ease-in-out infinite;
+}
+
+.tech-save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(41, 182, 246, 0.3);
+}
+
+.tech-close-btn {
+  color: #E1F5FE !important;
+  transition: all 0.3s ease;
+}
+
+.tech-close-btn:hover {
+  transform: rotate(90deg);
+  color: var(--primary-color) !important;
+}
+
+@keyframes buttonGlow {
+  0% { transform: rotate(45deg) translateX(-100%); }
+  100% { transform: rotate(45deg) translateX(100%); }
 }
 </style> 

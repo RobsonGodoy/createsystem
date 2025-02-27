@@ -1,15 +1,18 @@
 <template>
-  <v-container>
-    <v-row class="mb-4">
+  <v-container fluid class="sites-container pa-0">
+    <!-- Header futurista -->
+    <v-row class="tech-header px-4 py-2 mb-6">
       <v-col cols="12" class="d-flex justify-space-between align-center">
-        <h1>Meus Sites</h1>
-        <v-btn
-          color="primary"
-          prepend-icon="mdi-plus"
-          @click="showNewSiteDialog = true"
-        >
-          Novo Site
-        </v-btn>
+        <div class="d-flex align-center">
+          <v-btn
+            color="primary"
+            prepend-icon="mdi-plus"
+            @click="showNewSiteDialog = true"
+            class="tech-button"
+          >
+            Novo Site
+          </v-btn>
+        </div>
       </v-col>
     </v-row>
 
@@ -44,7 +47,7 @@
         md="4"
         lg="3"
       >
-        <v-card>
+        <v-card class="tech-card">
           <v-img
             :src="getPreviewImage(site)"
             height="200"
@@ -56,29 +59,34 @@
                 <v-icon size="large" color="grey-lighten-1">mdi-web</v-icon>
               </v-row>
             </template>
+            <div class="tech-overlay">
+              <div class="tech-lines"></div>
+            </div>
           </v-img>
 
-          <v-card-title>{{ site.name }}</v-card-title>
+          <v-card-title class="tech-title">{{ site.name }}</v-card-title>
 
           <v-card-text>
             <v-chip
               :color="site.isPublished ? 'success' : 'warning'"
               size="small"
-              class="mb-2"
+              class="mb-2 tech-chip"
             >
               {{ site.isPublished ? 'Publicado' : 'Rascunho' }}
             </v-chip>
-            <div class="text-caption">
+            <div class="text-caption tech-text">
               Última atualização: {{ formatDate(site.updatedAt) }}
             </div>
           </v-card-text>
 
-          <v-card-actions>
+          <v-card-actions class="tech-actions">
             <v-btn
               variant="text"
-              color="primary"
+              color="white"
               @click="router.push(`/editor/${site.id}`)"
+              class="tech-button"
             >
+              <v-icon color="white" start>mdi-pencil</v-icon>
               Editar
             </v-btn>
             <v-btn
@@ -86,27 +94,30 @@
               variant="text"
               color="success"
               @click="handleViewSite(site.buildPath)"
+              class="tech-button"
             >
+              <v-icon start>mdi-eye</v-icon>
               Visualizar
             </v-btn>
             <v-spacer />
             <v-menu>
               <template v-slot:activator="{ props }">
-                <v-btn icon v-bind="props">
+                <v-btn icon v-bind="props" class="tech-button">
                   <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
-              <v-list>
+              <v-list class="tech-menu">
                 <v-list-item
                   v-if="!site.isPublished"
                   @click="handlePublish(site.id)"
+                  class="tech-menu-item"
                 >
                   <v-list-item-title>
                     <v-icon start>mdi-publish</v-icon>
                     Publicar
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="handleDelete(site)">
+                <v-list-item @click="handleDelete(site)" class="tech-menu-item">
                   <v-list-item-title class="text-error">
                     <v-icon start color="error">mdi-delete</v-icon>
                     Excluir
@@ -120,26 +131,35 @@
     </v-row>
 
     <!-- Diálogo para criar novo site -->
-    <v-dialog v-model="showNewSiteDialog" max-width="500px">
-      <v-card>
-        <v-card-title>Novo Site</v-card-title>
-        <v-card-text>
+    <v-dialog v-model="showNewSiteDialog" max-width="500px" class="tech-dialog">
+      <v-card class="tech-dialog-card">
+        <div class="tech-dialog-header">
+          <v-icon size="28" color="primary" class="mr-2">mdi-plus-circle</v-icon>
+          <span class="text-h5 tech-text">Novo Site</span>
+        </div>
+        <v-card-text class="tech-dialog-content">
           <v-form ref="form" v-model="valid" @submit.prevent="handleCreateSite">
             <v-text-field
               v-model="newSiteName"
               :rules="nameRules"
               label="Nome do Site"
               required
+              class="tech-input"
+              variant="outlined"
+              color="primary"
+              bg-color="var(--background-light)"
             />
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="tech-dialog-actions">
           <v-spacer />
           <v-btn
+            variant="outlined"
             color="primary"
-            :text="true"
             @click="showNewSiteDialog = false"
+            class="tech-button mr-2"
           >
+            <v-icon start>mdi-close</v-icon>
             Cancelar
           </v-btn>
           <v-btn
@@ -147,7 +167,9 @@
             :disabled="!valid"
             :loading="creating"
             @click="handleCreateSite"
+            class="tech-button"
           >
+            <v-icon start>mdi-check</v-icon>
             Criar
           </v-btn>
         </v-card-actions>
@@ -155,27 +177,41 @@
     </v-dialog>
 
     <!-- Diálogo de confirmação de exclusão -->
-    <v-dialog v-model="showDeleteDialog" max-width="400px">
-      <v-card>
-        <v-card-title>Confirmar Exclusão</v-card-title>
-        <v-card-text>
-          Tem certeza que deseja excluir o site "{{ siteToDelete?.name }}"?
-          Esta ação não pode ser desfeita.
+    <v-dialog v-model="showDeleteDialog" max-width="400px" class="tech-dialog">
+      <v-card class="tech-dialog-card">
+        <div class="tech-dialog-header tech-dialog-header-danger">
+          <v-icon size="28" color="error" class="mr-2">mdi-alert</v-icon>
+          <span class="text-h5 tech-text">Confirmar Exclusão</span>
+        </div>
+        <v-card-text class="tech-dialog-content">
+          <div class="d-flex align-center mb-4">
+            <v-icon color="error" size="20" class="mr-2">mdi-delete</v-icon>
+            <span class="tech-text">
+              Tem certeza que deseja excluir o site "{{ siteToDelete?.name }}"?
+            </span>
+          </div>
+          <div class="text-caption tech-text-secondary">
+            Esta ação não pode ser desfeita.
+          </div>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="tech-dialog-actions">
           <v-spacer />
           <v-btn
+            variant="outlined"
             color="primary"
-            :text="true"
             @click="showDeleteDialog = false"
+            class="tech-button mr-2"
           >
+            <v-icon start>mdi-close</v-icon>
             Cancelar
           </v-btn>
           <v-btn
             color="error"
             :loading="deleting"
             @click="confirmDelete"
+            class="tech-button"
           >
+            <v-icon start>mdi-delete</v-icon>
             Excluir
           </v-btn>
         </v-card-actions>
@@ -322,5 +358,187 @@ const handleViewSite = async (buildPath: string) => {
 </script>
 
 <style scoped>
-/* Remover todos os estilos antigos do loading */
+.sites-container {
+  background-color: var(--background-dark);
+  min-height: 100vh;
+}
+
+.tech-header {
+  background: linear-gradient(90deg, var(--background-dark) 0%, var(--primary-color-dark) 100%);
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: 0 2px 12px rgba(41, 182, 246, 0.2);
+}
+
+.tech-text {
+  color: var(--text-primary);
+  text-shadow: 0 0 10px rgba(41, 182, 246, 0.5);
+}
+
+.tech-card {
+  background: var(--background-light);
+  border: 1px solid var(--primary-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(41, 182, 246, 0.2);
+}
+
+.tech-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--primary-color), transparent);
+  z-index: -1;
+  animation: borderGlow 2s ease-in-out infinite;
+}
+
+.tech-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 38, 52, 0.7);
+}
+
+.tech-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 50px,
+    rgba(41, 182, 246, 0.1) 50px,
+    rgba(41, 182, 246, 0.1) 51px
+  );
+  animation: moveLines 20s linear infinite;
+}
+
+.tech-title {
+  color: var(--text-primary);
+  font-weight: bold;
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.tech-chip {
+  border: 1px solid currentColor;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.tech-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.tech-button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(41, 182, 246, 0.1),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: buttonGlow 2s ease-in-out infinite;
+}
+
+.tech-menu {
+  background: var(--background-light);
+  border: 1px solid var(--primary-color);
+}
+
+.tech-menu-item {
+  transition: all 0.3s ease;
+}
+
+.tech-menu-item:hover {
+  background: rgba(41, 182, 246, 0.1);
+}
+
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes moveLines {
+  from { background-position: 0 0; }
+  to { background-position: 100px 0; }
+}
+
+@keyframes buttonGlow {
+  0% { transform: rotate(45deg) translateX(-100%); }
+  100% { transform: rotate(45deg) translateX(100%); }
+}
+
+/* Estilos para os diálogos */
+.tech-dialog-card {
+  background: var(--background-dark);
+  border: 1px solid var(--primary-color);
+  box-shadow: 0 0 20px rgba(41, 182, 246, 0.2);
+  overflow: hidden;
+}
+
+.tech-dialog-header {
+  background: linear-gradient(90deg, var(--background-dark) 0%, var(--primary-color-dark) 100%);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.tech-dialog-header-danger {
+  background: linear-gradient(90deg, var(--background-dark) 0%, #ff4444 100%);
+}
+
+.tech-dialog-content {
+  padding: 24px;
+  background: var(--background-dark);
+}
+
+.tech-dialog-actions {
+  padding: 16px 24px;
+  background: var(--background-dark);
+  border-top: 1px solid rgba(41, 182, 246, 0.1);
+}
+
+.tech-input {
+  border-color: var(--primary-color);
+}
+
+.tech-input:hover, .tech-input:focus {
+  box-shadow: 0 0 10px rgba(41, 182, 246, 0.2);
+}
+
+.tech-text-secondary {
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* Animação de entrada para os diálogos */
+.tech-dialog-enter-active,
+.tech-dialog-leave-active {
+  transition: all 0.3s ease;
+}
+
+.tech-dialog-enter-from,
+.tech-dialog-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
 </style> 

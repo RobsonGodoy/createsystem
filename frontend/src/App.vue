@@ -1,10 +1,27 @@
 <template>
   <v-app class="tech-bg">
-    <v-app-bar v-if="isAuthenticated" color="primary">
-      <v-app-bar-title>Site Builder</v-app-bar-title>
+    <v-app-bar v-if="isAuthenticated" class="tech-app-bar" elevation="0">
+      <div class="d-flex align-center">
+        <v-icon size="32" color="primary" class="mr-3">mdi-web</v-icon>
+        <v-app-bar-title class="tech-title">Site Builder</v-app-bar-title>
+      </div>
       <v-spacer />
-      <v-btn variant="text" :to="{ name: 'sites' }">Meus Sites</v-btn>
-      <v-btn variant="text" @click="handleLogout">Sair</v-btn>
+      <v-btn
+        variant="text"
+        :to="{ name: 'sites' }"
+        class="tech-nav-button mr-2"
+        prepend-icon="mdi-view-dashboard"
+      >
+        Meus Sites
+      </v-btn>
+      <v-btn
+        variant="text"
+        @click="handleLogout"
+        class="tech-nav-button"
+        prepend-icon="mdi-logout"
+      >
+        Sair
+      </v-btn>
     </v-app-bar>
 
     <v-main>
@@ -130,5 +147,74 @@ html, body {
   color: var(--primary-color);
   text-shadow: 0 0 5px var(--primary-color);
   letter-spacing: 1px;
+}
+
+/* Estilos para a barra de navegação futurista */
+.tech-app-bar {
+  background: linear-gradient(90deg, var(--background-dark) 0%, var(--primary-color-dark) 100%) !important;
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: 0 2px 12px rgba(41, 182, 246, 0.2) !important;
+  backdrop-filter: blur(10px);
+}
+
+.tech-title {
+  color: #E1F5FE !important; /* Azul muito claro */
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(41, 182, 246, 0.3);
+  letter-spacing: 1px;
+}
+
+.tech-nav-button {
+  position: relative;
+  overflow: hidden;
+  color: #B3E5FC !important; /* Azul claro */
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  margin: 0 4px;
+  padding: 0 16px;
+  height: 36px;
+  border-radius: 4px;
+}
+
+.tech-nav-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, var(--primary-color), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tech-nav-button:hover {
+  transform: translateY(-1px);
+  color: #E1F5FE !important; /* Azul muito claro ao passar o mouse */
+  text-shadow: 0 0 8px rgba(41, 182, 246, 0.4);
+  background: rgba(41, 182, 246, 0.1);
+}
+
+.tech-nav-button:hover::before {
+  opacity: 0.2;
+}
+
+.tech-nav-button .v-icon {
+  margin-right: 4px;
+  transition: transform 0.3s ease;
+  color: #B3E5FC !important; /* Azul claro para os ícones */
+}
+
+.tech-nav-button:hover .v-icon {
+  transform: scale(1.1);
+  color: #E1F5FE !important; /* Azul muito claro para os ícones ao passar o mouse */
+}
+
+/* Ajustando o ícone principal também */
+.tech-app-bar .v-icon.mr-3 {
+  color: #E1F5FE !important; /* Azul muito claro para o ícone principal */
+  text-shadow: 0 0 8px rgba(41, 182, 246, 0.3);
 }
 </style>

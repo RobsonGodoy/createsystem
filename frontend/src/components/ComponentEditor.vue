@@ -1,76 +1,221 @@
 <template>
-  <div class="component-editor">
+  <div class="component-editor tech-component-form">
     <template v-if="component.type === 'header'">
-      <v-text-field
-        v-model="localProps.title"
-        label="Título"
-      />
-      <v-text-field
-        v-model="localProps.subtitle"
-        label="Subtítulo"
-      />
-      <v-select
-        v-model="localProps.alignment"
-        :items="alignmentOptions"
-        label="Alinhamento"
-      />
-      <v-color-picker
-        v-model="localProps.backgroundColor"
-        label="Cor de Fundo"
-        mode="hex"
-        hide-inputs
-      />
-      <v-color-picker
-        v-model="localProps.textColor"
-        label="Cor do Texto"
-        mode="hex"
-        hide-inputs
-      />
+      <div class="tech-form-section">
+        <div class="tech-section-title">Conteúdo</div>
+        <v-text-field
+          v-model="localProps.title"
+          label="Título"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+        <v-text-field
+          v-model="localProps.subtitle"
+          label="Subtítulo"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+      </div>
+
+      <div class="tech-form-section">
+        <div class="tech-section-title">Estilo</div>
+        <v-select
+          v-model="localProps.alignment"
+          :items="alignmentOptions"
+          label="Alinhamento"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+        <v-select
+          v-model="localProps.style"
+          :items="[
+            { title: 'Moderno', value: 'modern' },
+            { title: 'Minimalista', value: 'minimal' },
+            { title: 'Gradiente', value: 'gradient' }
+          ]"
+          label="Estilo"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+        <v-select
+          v-model="localProps.height"
+          :items="[
+            { title: 'Pequeno', value: 'small' },
+            { title: 'Médio', value: 'medium' },
+            { title: 'Grande', value: 'large' }
+          ]"
+          label="Altura"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+      </div>
+
+      <div class="tech-form-section">
+        <div class="tech-section-title">Cores</div>
+        <div class="d-flex gap-4">
+          <v-color-picker
+            v-model="localProps.backgroundColor"
+            label="Cor de Fundo"
+            mode="hex"
+            class="tech-color-picker"
+            elevation="0"
+            hide-inputs
+          />
+          <v-color-picker
+            v-model="localProps.textColor"
+            label="Cor do Texto"
+            mode="hex"
+            class="tech-color-picker"
+            elevation="0"
+            hide-inputs
+          />
+        </div>
+      </div>
     </template>
 
     <template v-else-if="component.type === 'text'">
-      <v-textarea
-        v-model="localProps.content"
-        label="Conteúdo"
-        auto-grow
-        rows="5"
-      />
-      <v-select
-        v-model="localProps.alignment"
-        :items="alignmentOptions"
-        label="Alinhamento"
-      />
-      <v-text-field
-        v-model="localProps.fontSize"
-        label="Tamanho da Fonte"
-        type="number"
-        suffix="px"
-      />
-      <v-color-picker
-        v-model="localProps.color"
-        label="Cor do Texto"
-        mode="hex"
-        hide-inputs
-      />
+      <div class="tech-form-section">
+        <div class="tech-section-title">Conteúdo</div>
+        <v-textarea
+          v-model="localProps.content"
+          label="Texto"
+          class="tech-field"
+          variant="outlined"
+          auto-grow
+          rows="5"
+        />
+      </div>
+
+      <div class="tech-form-section">
+        <div class="tech-section-title">Estilo</div>
+        <v-select
+          v-model="localProps.alignment"
+          :items="alignmentOptions"
+          label="Alinhamento"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+        <v-select
+          v-model="localProps.style"
+          :items="[
+            { title: 'Padrão', value: 'default' },
+            { title: 'Cartão', value: 'card' },
+            { title: 'Destaque', value: 'highlight' }
+          ]"
+          label="Estilo"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+        <v-select
+          v-model="localProps.fontFamily"
+          :items="[
+            { title: 'Padrão', value: 'default' },
+            { title: 'Serifada', value: 'serif' },
+            { title: 'Moderna', value: 'modern' }
+          ]"
+          label="Fonte"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+      </div>
+
+      <div class="tech-form-section">
+        <div class="tech-section-title">Aparência</div>
+        <v-slider
+          v-model="localProps.fontSize"
+          label="Tamanho da Fonte"
+          class="tech-slider"
+          min="12"
+          max="48"
+          step="1"
+          thumb-label
+          :thumb-size="20"
+        />
+        <v-color-picker
+          v-model="localProps.color"
+          label="Cor do Texto"
+          mode="hex"
+          class="tech-color-picker"
+          elevation="0"
+          hide-inputs
+        />
+      </div>
     </template>
 
     <template v-else-if="component.type === 'image'">
-      <v-text-field
-        v-model="localProps.src"
-        label="URL da Imagem"
-      />
-      <v-text-field
-        v-model="localProps.alt"
-        label="Texto Alternativo"
-      />
-      <v-text-field
-        v-model="localProps.width"
-        label="Largura"
-      />
-      <v-text-field
-        v-model="localProps.height"
-        label="Altura"
-      />
+      <div class="tech-form-section">
+        <div class="tech-section-title">Imagem</div>
+        <v-text-field
+          v-model="localProps.src"
+          label="URL da Imagem"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+          prepend-inner-icon="mdi-link"
+        />
+        <v-text-field
+          v-model="localProps.alt"
+          label="Texto Alternativo"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+      </div>
+
+      <div class="tech-form-section">
+        <div class="tech-section-title">Dimensões</div>
+        <v-text-field
+          v-model="localProps.width"
+          label="Largura"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+        <v-text-field
+          v-model="localProps.height"
+          label="Altura"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+      </div>
+
+      <div class="tech-form-section">
+        <div class="tech-section-title">Estilo</div>
+        <v-select
+          v-model="localProps.style"
+          :items="[
+            { title: 'Padrão', value: 'default' },
+            { title: 'Arredondado', value: 'rounded' },
+            { title: 'Sombra', value: 'shadow' },
+            { title: 'Moldura', value: 'frame' }
+          ]"
+          label="Estilo"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+        <v-select
+          v-model="localProps.animation"
+          :items="[
+            { title: 'Nenhuma', value: 'none' },
+            { title: 'Fade In', value: 'fade-in' },
+            { title: 'Zoom', value: 'zoom' }
+          ]"
+          label="Animação"
+          class="tech-field"
+          variant="outlined"
+          density="comfortable"
+        />
+      </div>
     </template>
 
     <template v-else-if="component.type === 'button'">
@@ -260,4 +405,118 @@ const removeImage = (index: number) => {
   localProps.value.images.splice(index, 1);
   updateProps();
 };
-</script> 
+</script>
+
+<style scoped>
+.tech-component-form {
+  color: #E1F5FE;
+}
+
+.tech-form-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(41, 182, 246, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(41, 182, 246, 0.1);
+}
+
+.tech-section-title {
+  font-family: 'Roboto Mono', monospace;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(41, 182, 246, 0.1);
+}
+
+.tech-field {
+  margin-bottom: 16px;
+}
+
+.tech-field:last-child {
+  margin-bottom: 0;
+}
+
+.tech-color-picker {
+  background: rgba(41, 182, 246, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(41, 182, 246, 0.1);
+  overflow: hidden;
+}
+
+.tech-slider {
+  padding: 16px 0;
+}
+
+.tech-slider :deep(.v-slider-track__fill) {
+  background: var(--primary-color) !important;
+}
+
+.tech-slider :deep(.v-slider-thumb) {
+  color: var(--primary-color) !important;
+  border: 2px solid var(--primary-color) !important;
+}
+
+.tech-slider :deep(.v-slider-thumb__label) {
+  background: var(--primary-color) !important;
+  font-family: 'Roboto Mono', monospace;
+}
+
+:deep(.v-field--focused) {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 10px rgba(41, 182, 246, 0.2) !important;
+}
+
+:deep(.v-field__outline) {
+  --v-field-border-opacity: 0.2 !important;
+}
+
+:deep(.v-field--variant-outlined) {
+  --v-field-border-opacity: 0.2 !important;
+}
+
+:deep(.v-field__overlay) {
+  background-color: rgba(41, 182, 246, 0.05) !important;
+}
+
+:deep(.v-label) {
+  color: #B3E5FC !important;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+:deep(.v-field__input) {
+  color: #E1F5FE !important;
+}
+
+:deep(.v-select__selection),
+:deep(.v-select__selection-text) {
+  color: #E1F5FE !important;
+}
+
+:deep(.v-menu__content) {
+  background: var(--background-dark) !important;
+  border: 1px solid var(--primary-color) !important;
+}
+
+:deep(.v-list) {
+  background: transparent !important;
+  color: #E1F5FE !important;
+}
+
+:deep(.v-list-item) {
+  color: #E1F5FE !important;
+}
+
+:deep(.v-list-item--active) {
+  background: rgba(41, 182, 246, 0.1) !important;
+  color: var(--primary-color) !important;
+}
+
+:deep(.v-list-item:hover) {
+  background: rgba(41, 182, 246, 0.05) !important;
+}
+</style> 
